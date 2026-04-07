@@ -1,0 +1,39 @@
+\begin{thebibliography}{10}
+
+\bibitem{kumari2025hand}
+S.~Kumari, A.~Kushwaha, S.~Singh, and R.~SAIKOMAL, ``Hand gesture recognizer,'' {\em International Journal of Science and Advanced Technology}, vol.~16, Oct 2025.
+
+\bibitem{mopidevi2023hand}
+S.~Mopidevi, ``Hand gesture recognition and voice conversion for deaf and dumb,'' {\em E3S Web of Conferences}, vol.~391, p.~01060, Jan 2023.
+
+\bibitem{deep2025intellimotion}
+H.~Deep, M.~K. S, P.~Verma, and K.~Chinmay, ``Intellimotion: Real-time hand gesture and pose tracking using opencv and mediapipe,'' in {\em IEEE Conference}, June 2025.
+
+\bibitem{biswas2024mediapipe}
+S.~Biswas, A.~Nandy, A.~K. Naskar, and R.~Saw, ``Mediapipe with lstm architecture for real-time hand gesture recognization,'' in {\em Communications in Computer and Information Science}, Springer, Jan 2024.
+
+\bibitem{sas_computervision}
+{SAS}, ``Computer vision: What it is and why it matters.'' \url{https://www.sas.com/pt_pt/insights/analytics/computer-vision.html}.
+\newblock Accessed: 2026.
+
+\bibitem{roboflow_colorspaces}
+{Roboflow}, ``Opencv color spaces.'' \url{https://blog.roboflow.com/opencv-color-spaces/}.
+\newblock Accessed: 2026.
+
+\bibitem{mallick_bgr}
+S.~Mallick, ``Why does opencv use bgr color format?.'' \url{https://learnopencv.com/why-does-opencv-use-bgr-color-format/}.
+\newblock Accessed: 2026.
+
+\bibitem{opencv_about}
+{OpenCV}, ``About opencv.'' \url{https://opencv.org/about/}.
+\newblock Accessed: 2026.
+
+\bibitem{mediapipe_main}
+{Google}, ``Mediapipe.'' \url{https://mediapipe.org/}.
+\newblock Accessed: 2026.
+
+\bibitem{mediapipe_hands}
+{Google}, ``Mediapipe hands solutions.'' \url{https://mediapipe.readthedocs.io/en/latest/solutions/hands.html}.
+\newblock Accessed: 2026.
+
+\end{thebibliography}

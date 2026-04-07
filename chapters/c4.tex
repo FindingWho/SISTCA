@@ -1,0 +1,143 @@
+\section{Tutorial/Functionality}
+\label{sec:tutorial_advanced}
+
+In this chapter, we will dissect the codebase developed for real-time hand detection and finger counting. Beyond simply presenting the code, this section elucidates the underlying algorithmic thought process and details the fundamental commands provided by the \textbf{OpenCV} and \textbf{MediaPipe} libraries.
+
+\subsection{Algorithmic Rationale}
+Before delving into the syntactic implementation, it is crucial to understand the logical pipeline of the system:
+\begin{enumerate}
+    \item \textbf{Data Acquisition:} Capture a continuous stream of visual data from a hardware peripheral (webcam).
+    \item \textbf{Normalization:} Mirror the image for intuitive user interaction and convert the color space to meet the machine learning model's prerequisites.
+    \item \textbf{Inference:} Pass the normalized image through the MediaPipe neural network to extract a topological graph of the hand (landmarks).
+    \item \textbf{Kinematic Evaluation:} Utilize the spatial coordinates of these landmarks to deduce the state of each digit (extended or folded) based on anatomical constraints.
+    \item \textbf{Feedback:} Overlay the computed state onto the original image stream to provide real-time visual feedback.
+\end{enumerate}
+
+\subsection{Environment Setup and Core Libraries}
+\label{subsec:setup}
+
+We initiate the script by importing the requisite libraries and defining the core MediaPipe objects.
+
+\begin{lstlisting}
+import os
+os.environ["QT_QPA_PLATFORM"] = "xcb" 
+
+import cv2
+import mediapipe as mp
+
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
+hands = mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+\end{lstlisting}
+
+\textbf{Basic Commands Explained:}
+\begin{itemize}
+    \item \texttt{import cv2}: Imports the OpenCV library, the industry standard for real-time computer vision and image processing tasks.
+    \item \texttt{mp.solutions.hands}: Accesses the specific hand tracking module within the broader MediaPipe framework.
+    \item \texttt{mp\_hands.Hands(...)}: Instantiates the machine learning model. The parameters \texttt{min\_detection\_confidence} and \texttt{min\_tracking\_confidence} act as statistical thresholds. Setting them to $0.5$ dictates that the model must be at least 50\% certain that a hand is present to begin or continue tracking it, balancing processing speed with accuracy.
+\end{itemize}
+
+\subsection{Video Capture and Landmark Mapping}
+\label{subsec:capture}
+
+The subsequent phase involves initializing the hardware interface and establishing the indices for the finger landmarks.
+
+\begin{lstlisting}
+cap = cv2.VideoCapture(1)
+cv2.namedWindow('Hand Tracker', cv2.WINDOW_NORMAL)
+
+# IDs for the fingertip landmarks in MediaPipe (Index, Middle, Ring, Pinky)
+pontas_dos_dedos = [8, 12, 16, 20]
+ponta_do_polegar = 4
+\end{lstlisting}
+
+\textbf{Basic Commands Explained:}
+\begin{itemize}
+    \item \texttt{cv2.VideoCapture(1)}: Creates a video capture object. The argument \texttt{1} targets the secondary camera interface, while \texttt{0} typically targets the primary built-in webcam.
+    \item \texttt{cv2.namedWindow(...)}: Initializes a graphical user interface (GUI) window. The \texttt{WINDOW\_NORMAL} flag allows the user to resize the output window dynamically.
+\end{itemize}
+
+\subsection{Image Pre-processing: The "Why" and "How"}
+\label{subsec:preprocessing}
+
+Within the continuous execution loop (\texttt{while True}), raw frames are acquired and mathematically transformed.
+
+\begin{lstlisting}
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    frame = cv2.flip(frame, 1)
+    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = hands.process(rgb_frame)
+\end{lstlisting}
+
+\textbf{Thought Process \& Basic Commands:}
+\begin{itemize}
+    \item \texttt{cap.read()}: Extracts the subsequent frame from the video stream. It returns a boolean (\texttt{ret}) indicating success, and the matrix of pixels (\texttt{frame}).
+    \item \texttt{cv2.flip(frame, 1)}: Applies a horizontal mirror reflection across the vertical axis (indicated by the \texttt{1}). Without this operation, moving your hand to the left would result in the on-screen hand moving to the right, which causes severe cognitive dissonance for the user.
+    \item \texttt{cv2.cvtColor(...)}: OpenCV natively captures color arrays in Blue-Green-Red (BGR) format. However, the MediaPipe neural network was trained on Red-Green-Blue (RGB) datasets. This function strictly translates the color channels to ensure the model processes the image accurately.
+    \item \texttt{hands.process(rgb\_frame)}: Executes the core inference step, passing the RGB matrix into the neural network and returning a \texttt{results} object containing the spatial coordinates of any detected hands.
+\end{itemize}
+
+\subsection{Kinematic Logic: The Coordinate System}
+\label{subsec:logic}
+
+When hands are detected, the algorithm iterates through them and evaluates the spatial configuration of the digits.
+
+\begin{lstlisting}
+    if results.multi_hand_landmarks:
+        for hand_idx, hand_landmarks in enumerate(results.multi_hand_landmarks):
+            mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+            hand_label = results.multi_handedness[hand_idx].classification[0].label
+            dedos_levantados = 0
+
+            # 1. Thumb Logic (X-Axis)
+            if hand_label == "Right":
+                if hand_landmarks.landmark[ponta_do_polegar].x < hand_landmarks.landmark[ponta_do_polegar - 1].x:
+                    dedos_levantados += 1
+            else: # "Left"
+                if hand_landmarks.landmark[ponta_do_polegar].x > hand_landmarks.landmark[ponta_do_polegar - 1].x:
+                    dedos_levantados += 1
+
+            # 2. Logic for the remaining 4 fingers (Y-Axis)
+            for ponta in pontas_dos_dedos:
+                if hand_landmarks.landmark[ponta].y < hand_landmarks.landmark[ponta - 2].y:
+                    dedos_levantados += 1
+\end{lstlisting}
+
+\textbf{Thought Process for Finger Counting:}
+The algorithm's core logic is predicated on the digital image coordinate system, where the origin $(0,0)$ is located at the top-left corner of the image. Consequently, moving downwards increases the Y-value, and moving rightwards increases the X-value.
+
+\begin{itemize}
+    \item \textbf{The Four Fingers (Index to Pinky):} To determine if a finger is "up", we compare the Y-coordinate of the fingertip (\texttt{landmark[ponta]}) to the Y-coordinate of the knuckle two joints below it (\texttt{landmark[ponta - 2]}). Due to the inverted Y-axis, a numerically smaller Y-value indicates a higher physical position. Thus, if $Y_{tip} < Y_{knuckle}$, the finger is extended.
+    \item \textbf{The Thumb Anomaly:} The thumb operates on a different biomechanical plane, rotating horizontally rather than folding vertically. Therefore, we evaluate the X-axis. A right thumb pointing leftwards (towards the center of the body) has a smaller X-value than its base joint. This logic must be strictly inverted for the left hand, necessitating the \texttt{hand\_label} conditional check.
+\end{itemize}
+
+\subsection{Visual Output and Resource Deallocation}
+\label{subsec:output}
+
+Finally, the extracted data is overlaid onto the original BGR frame for the user's viewing.
+
+\begin{lstlisting}
+            cv2.putText(frame, f'{hand_label} hand: {dedos_levantados} fingers', (10, 50 + (hand_idx * 50)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+
+    cv2.imshow('Hand Tracker', frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+\end{lstlisting}
+
+\textbf{Basic Commands Explained:}
+\begin{itemize}
+    \item \texttt{cv2.putText(...)}: Renders text directly onto the pixel matrix. The algorithmic offset \texttt{50 + (hand\_idx * 50)} ensures that if multiple hands are detected, their respective text labels stack vertically without visual occlusion.
+    \item \texttt{cv2.imshow(...)}: Commands the operating system to refresh the GUI window with the newly processed frame.
+    \item \texttt{cv2.waitKey(1)}: Halts execution for 1 millisecond to listen for keyboard interrupts. If the user presses the 'q' key, the \texttt{while} loop breaks.
+    \item \texttt{cap.release() \& cv2.destroyAllWindows()}: These cleanup functions are crucial; they sever the connection to the hardware camera to prevent system locks and safely close all active graphical windows.
+\end{itemize}
