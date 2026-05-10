@@ -112,7 +112,34 @@ V1.0 & April 2026 & Rodrigo Pires (1210697) \newline Miguel Veloso (1212013) \ne
 \newpage
 % Annexes
 \section*{Annexes}
-\addcontentsline{toc}{section}{Annexes}
-% (here you should include any technical documentation that you consider relevant for supporting the lab script but does not “fit into”, as you feel it would jeopardize the reading flow of the core text)
+\addcontentsline{toc}{section}{Annexes} % Ensures it shows up in your Table of Contents
 
+\subsection*{Annex A: Lab Resources}
+\label{sec:annex}
+During this lab, you may encounter hardware compatibility issues, strict camera permission errors, or time constraints that prevent you from successfully collecting the required 300 hand poses. 
+
+\begin{sloppypar}
+To ensure every student can successfully complete the Machine Learning and Human-Computer Interaction (HCI) challenges of this script, a repository website has been created. 
+\end{sloppypar}
+
+\vspace{0.4cm}
+\noindent\fbox{%
+    \parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+        \begin{center}
+            \textbf{Lab Resources Repository} \\
+            \vspace{0.2cm}
+            \url{https://findingwho.github.io/SISTCA/}
+        \end{center}
+    }%
+}
+\vspace{0.4cm}
+
+\noindent Available downloads on this page include:
+\begin{itemize}
+    \item \textbf{Hand Pose Dataset (\texttt{hand data.csv}):} A pre-collected dataset containing 300, position-invariant 3D hand poses for the gestures 0 through 5.
+    \item \textbf{Pre-trained AI Model (\texttt{hand model 3d.pkl}):} A pre-compiled Random Forest model trained on the verified dataset, ready to be plugged directly into the HCI mouse control script.
+\end{itemize}
+
+\vspace{0.2cm}
+\noindent \textit{Note: If you utilize the dataset or the pre-trained model, you must place the downloaded files directly into your project's root directory before running the inference scripts.}
 \end{document}

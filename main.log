@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.4.9)  10 MAY 2026 17:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.4.9)  10 MAY 2026 19:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -484,9 +484,7 @@ Overfull \hbox (51.27113pt too wide) in paragraph at lines 79--80
 
 (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
-)
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 81.
- [9] [10]) [11]
+) [9] [10]) [11]
 \openout2 = `chapters/c4.aux'.
 
  (./chapters/c4.tex
@@ -503,19 +501,21 @@ Overfull \hbox (32.03549pt too wide) in paragraph at lines 57--58
 []\OT1/cmtt/m/n/10.95 cv2.namedWindow(...)\OT1/cmr/m/n/10.95 : Ini-tial-izes a graph-i-cal user in-ter-face (GUI) win-dow. The \OT1/cmtt/m/n/10.95 WINDOW[]NORMAL
  []
 
-[13] [14] [15]
-Overfull \hbox (2.88846pt too wide) in paragraph at lines 196--197
-[]\OT1/cmr/m/n/10.95 With a trained model (\OT1/cmtt/m/n/10.95 .pkl \OT1/cmr/m/n/10.95 file) ca-pa-ble of rec-og-niz-ing ges-tures, we can im-port the \OT1/cmtt/m/n/10.95 pyautogui
+[13] [14] [15])
+Overfull \hbox (6.79999pt too wide) in paragraph at lines 226--100
+[]
  []
 
-) [16]
+[16] [17]
 \openout2 = `chapters/c5.aux'.
 
- (./chapters/c5.tex [17
+ (./chapters/c5.tex
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 8.
+ [18
 
 
 
-]) [18]
+]) [19]
 \openout2 = `chapters/c6.aux'.
 
  (./chapters/c6.tex
@@ -528,7 +528,7 @@ Overfull \hbox (92.6702pt too wide) in paragraph at lines 13--14
 \OT1/cmr/m/n/10.95 closed (0 fin-gers raised). This move-ment must trig-ger the \OT1/cmtt/m/n/10.95 Ctrl - \OT1/cmr/m/n/10.95 short-cut via the \OT1/cmtt/m/n/10.95 pyautogui.hotkey('ctrl',
  []
 
-) [19
+) [20
 
 
 
@@ -537,10 +537,13 @@ Underfull \hbox (badness 4713) in paragraph at lines 48--50
 []\OT1/cmr/m/n/10.95 PyAutoGUI, ``Pyau-to-gui doc-u-men-ta-tion.'' []$\OT1/cmtt/m/n/10.95 https : / / pyautogui . readthedocs . io / en /
  []
 
-) [20
+) [21
 
 
-] [21] (./main.aux (./chapters/c1.aux) (./chapters/c2.aux) (./chapters/c3.aux) (./chapters/c4.aux) (./chapters/c5.aux) (./chapters/c6.aux))
+]
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 139.
+ [22] (./main.aux (./chapters/c1.aux) (./chapters/c2.aux) (./chapters/c3.aux) (./chapters/c4.aux) (./chapters/c5.aux) (./chapters/c6.aux))
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -549,18 +552,18 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 29B570C0379FD8D52E92F77E21EFA146;7168.
  ) 
 Here is how much of TeX's memory you used:
- 13852 strings out of 469495
- 211319 string characters out of 5470099
- 1085950 words of memory out of 5000000
- 41984 multiletter control sequences out of 15000+600000
+ 13864 strings out of 469495
+ 211689 string characters out of 5470099
+ 1085959 words of memory out of 5000000
+ 41989 multiletter control sequences out of 15000+600000
  635120 words of font info for 66 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 75i,9n,79p,743b,2189s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,9n,79p,743b,2179s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on main.pdf (21 pages, 690925 bytes).
+Output written on main.pdf (22 pages, 695627 bytes).
 PDF statistics:
- 726 PDF objects out of 1000 (max. 8388607)
- 668 compressed objects within 7 object streams
- 331 named destinations out of 1000 (max. 500000)
+ 739 PDF objects out of 1000 (max. 8388607)
+ 680 compressed objects within 7 object streams
+ 338 named destinations out of 1000 (max. 500000)
  325 words of extra memory for PDF output out of 10000 (max. 10000000)
 

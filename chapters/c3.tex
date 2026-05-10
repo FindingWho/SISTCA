@@ -78,7 +78,7 @@ The function \verb|cap = cv2.VideoCapture(n)| is responsible for the camera init
 
 Before sending the image to the algorithm, pre-processing is required. OpenCV captures frames in the \textbf{BGR} format (Blue, Green, Red). The function \verb|cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)| will convert it to the \textbf{RGB} format (Red, Green, Blue), which is the standard format used by most Deep Learning Models to ensure correct Inference (AI Processing). In addition, mirroring the frame with the function \verb|cv2.flip(frame, 1)| provides a more intuitive feed for the user.
 
-\begin{lstlisting}[caption={Basic Camera Feed using OpenCV}, language=Python, captionpos=b]
+\begin{lstlisting}[title={Basic Camera Feed using OpenCV}, language=Python, captionpos=b]
 import cv2
 
 cap = cv2.VideoCapture(0)
@@ -103,7 +103,7 @@ cv2.destroyAllWindows()
 
 The next step is to pass the frames through the MediaPipe model, which analyses the image and returns 21 Hand Landmarks placed throughout the hand, storing their respective coordinates. The analysis is triggered by calling the function \verb|results = hands.process(rgb_frame)|. Following the Inference, if a hand is detected, the coordinates are connected by lines and drawn onto the original frame, which is then displayed in the window feed.
 
-\begin{lstlisting}[caption={Mediapipe Frame Analysis}, language=Python, captionpos=b]
+\begin{lstlisting}[title={Mediapipe Frame Analysis}, language=Python, captionpos=b]
 import cv2
 import mediapipe as mp
 

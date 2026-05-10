@@ -157,7 +157,7 @@ We set the wrist (Landmark 0) as the origin point $(0,0,0)$. All other 20 landma
     z_{rel} &= z_i - z_{wrist}
 \end{align}
 
-\begin{lstlisting}[language=Python, caption=Extracting 3D Position-Invariant Features]
+\begin{lstlisting}[language=Python, title=Extracting 3D Position-Invariant Features]
 landmark_data = []
 wrist = hand_landmarks.landmark[0]
 
@@ -171,7 +171,7 @@ for landmark in hand_landmarks.landmark:
 \subsubsection{Training the Classifier}
 By capturing a dataset containing roughly 100-200 variations of each gesture (0 to 5 fingers) using these engineered relative coordinates, the data becomes tabular. This allows us to utilize the \texttt{scikit-learn} library to train a Random Forest Classifier.
 
-\begin{lstlisting}[language=Python, caption=Training a Random Forest Model]
+\begin{lstlisting}[language=Python, title=Training a Random Forest Model]
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
@@ -193,23 +193,40 @@ with open('hand_model_3d.pkl', 'wb') as f:
 \end{lstlisting}
 
 \subsubsection{Real-Time Mouse Control (HCI)}
-With a trained model (\texttt{.pkl} file) capable of recognizing gestures, we can import the \texttt{pyautogui} library to bridge the gap between Python and the operating system. 
+With a trained model capable of recognizing gestures, we can import the \texttt{pyautogui} library to bridge the gap between Python and the operating system. 
 
-The tip of the index finger (Landmark 8) dictates the cursor's spatial $X$ and $Y$ coordinates, mapped to the monitor's resolution. When the ML model classifies the hand structure as a closed fist ("0"), the script triggers a left-click event.
+To map the physical movement of the hand to the monitor, we track the tip of the index finger (Landmark 8). Instead of a direct 1:1 mapping, which would force the user to stretch their arm uncomfortably far to reach the screen edges, we use \texttt{numpy.interp} to create an "active bounding box." By mapping the middle 70\% of the camera's field of view (0.15 to 0.85) to the full resolution of the screen, the cursor becomes highly responsive to small, comfortable wrist movements. 
 
-\begin{lstlisting}[language=Python, caption=HCI Mouse Control Integration]
+When the ML model classifies the hand structure as a closed fist ("0"), the script triggers a left-click event.
+
+\begin{lstlisting}[language=Python, title=HCI Mouse Control Integration with Interpolation]
 import pyautogui
+import numpy as np
 import time
 
-# Mouse mapping logic using the Index Finger
-index_finger_tip = hand_landmarks.landmark[8]
-mouse_x = int(index_finger_tip.x * screen_w)
-mouse_y = int(index_finger_tip.y * screen_h)
-pyautogui.moveTo(mouse_x, mouse_y, _pause=False)
+# Get the monitor's true resolution automatically
+screen_w, screen_h = pyautogui.size()
 
-# Clicking logic based on ML prediction
-if prediction == '0':
-    if (current_time - last_click_time) > 1.0: # 1-second cooldown
-        pyautogui.click()
-        last_click_time = current_time
+# ... [Inside the MediaPipe detection loop] ...
+
+# 1. Mouse mapping logic using the Index Finger
+x_pure = hand_landmarks.landmark[8].x
+y_pure = hand_landmarks.landmark[8].y
+
+# Interpolate the camera percentage (15% to 85%) to screen pixels
+target_x = np.interp(x_pure, [0.15, 0.85], [0, screen_w])
+target_y = np.interp(y_pure, [0.15, 0.85], [0, screen_h])
+
+# Move the OS mouse instantly to that pixel
+pyautogui.moveTo(int(target_x), int(target_y))
 \end{lstlisting}
+
+
+\vspace{0.6cm}
+\noindent\fbox{%
+    \parbox{\textwidth}{%
+        \begin{center}\textbf{\LARGE BEFORE MOVING ON}\end{center}
+        Before moving on to the exercises, please note: If you encountered hardware issues, strict camera permissions, or ran out of time during the data collection phases of this tutorial, please refer to \hyperref[sec:annex]{\underline{\textbf{Annex A}}} at the end of this document. It contains a direct link to download a pre-compiled dataset and a pre-trained AI model, guaranteeing you can complete the upcoming challenges.
+    }%
+}
+\vspace{0.4cm}
