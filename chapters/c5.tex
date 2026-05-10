@@ -5,7 +5,7 @@ In this setting of using our hands to control our computer, the ability to "alt-
 \subsubsection{Resolution A}
 Using the Ring Finger (Landmark 16), we can create a simple geometric rule to trigger the Alt-Tab keyboard macro using PyAutoGUI.
 
-\begin{lstlisting}[caption={Exercise A - Alt Tab Implementation}, language=Python, captionpos=b]
+\begin{lstlisting}[title={Exercise A - Alt Tab Implementation}, language=Python, captionpos=b]
 rf_point = hand_landmarks.landmark[16] # Ring Finger Tip
 rf_base = hand_landmarks.landmark[14]  # Ring Finger PIP Joint (Base)
 
@@ -33,7 +33,7 @@ According to the model, the tip of the pinky finger is point (landmark) 20. We c
 A major challenge is preventing the shortcut from triggering multiple times a second without pausing the video feed. If we use a simple \texttt{time.sleep()} function, the whole program freezes. This would stop the camera and the mouse control, making it impossible to crop the screenshot. Instead, we use a non-blocking timer with \texttt{time.time()}. This method checks the current time and ensures the shortcut is only pressed once every few seconds. Because the main loop never stops, the user can immediately close their hand (which our Custom AI model predicts as state \texttt{0}) to click and drag the mouse to capture the screen.
 
 The code modification required to implement this logic within the existing software is shown below:
-\begin{lstlisting}[caption={Exercise B - Screenshot Automation Implementation}, language=Python, captionpos=b]
+\begin{lstlisting}[title={Exercise B - Screenshot Automation Implementation}, language=Python, captionpos=b]
 import pyautogui
 import time
 
@@ -59,4 +59,4 @@ if is_pinky_raised and (current_time - last_action_time > COOLDOWN_SECONDS):
 # ... [The rest of the existing gesture control logic remains unchanged] ...
 \end{lstlisting}
 
-This approach allows the software to take a screenshot and immediately transition back to gesture control, fulfilling the exercise requirements while keeping the application smooth and responsive[cite: 430, 431].
+This approach allows the software to take a screenshot and immediately transition back to gesture control, fulfilling the exercise requirements while keeping the application smooth and responsive.
