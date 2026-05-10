@@ -4,7 +4,7 @@ Welcome to the lab! Below are the essential files you will need to complete the 
 
 ### Code example from Tutorial/Functionality
 
-* [Download Dataset (CSV)](/downloadable/run_ai.py)
+* [Download Code Example](/downloadable/run_ai.py)
 
 ### Dataset for model training
 
