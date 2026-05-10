@@ -23,17 +23,16 @@ else:
 \end{lstlisting}
 
 \subsection{Problem B - Screenshot Automation}
-Enhance the existing real-time hand-tracking and mouse-control software to trigger a screenshot when a specific gesture is detected[cite: 416]. The system needs to recognize when the user fully extends their pinky finger and then execute the \texttt{Windows + Shift + S} keyboard shortcut[cite: 417]. Importantly, the program must continue running right after pressing the shortcut[cite: 418]. This allows the user to use the existing hand gestures to move the mouse and select the area for the screenshot[cite: 419].
+Enhance the existing real-time hand-tracking and mouse-control software to trigger a screenshot when a specific gesture is detected. The system needs to recognize when the user fully extends their pinky finger and then execute the \texttt{Windows + Shift + S} keyboard shortcut. Importantly, the program must continue running right after pressing the shortcut. This allows the user to use the existing hand gestures to move the mouse and select the area for the screenshot.
 
 \subsubsection{Resolution B}
-To add this feature, we use the \texttt{pyautogui} library to simulate keyboard presses[cite: 420]. The logic depends on checking the position of the pinky finger using the MediaPipe hand tracking model[cite: 421]. 
+To add this feature, we use the \texttt{pyautogui} library to simulate keyboard presses. The logic depends on checking the position of the pinky finger using the MediaPipe hand tracking model. 
 
-According to the model, the tip of the pinky finger is point (landmark) 20[cite: 422]. We can figure out if the finger is raised by comparing the Y-coordinate of the tip (landmark 20) with a lower joint, like landmark 18[cite: 422]. In images, the Y-axis goes from top to bottom, meaning a smaller Y-value is physically higher on the screen[cite: 422]. So, if the tip's Y-value is smaller than the joint's Y-value, the finger is raised[cite: 423].
+According to the model, the tip of the pinky finger is point (landmark) 20. We can figure out if the finger is raised by comparing the Y-coordinate of the tip (landmark 20) with a lower joint, like landmark 18. In images, the Y-axis goes from top to bottom, meaning a smaller Y-value is physically higher on the screen. So, if the tip's Y-value is smaller than the joint's Y-value, the finger is raised.
 
-A major challenge is preventing the shortcut from triggering multiple times a second without pausing the video feed[cite: 424]. If we use a simple \texttt{time.sleep()} function, the whole program freezes[cite: 425]. This would stop the camera and the mouse control, making it impossible to crop the screenshot[cite: 426]. Instead, we use a non-blocking timer with \texttt{time.time()}[cite: 427]. This method checks the current time and ensures the shortcut is only pressed once every few seconds[cite: 427]. Because the main loop never stops, the user can immediately close their hand (which our Custom AI model predicts as state \texttt{0}) to click and drag the mouse to capture the screen[cite: 428].
+A major challenge is preventing the shortcut from triggering multiple times a second without pausing the video feed. If we use a simple \texttt{time.sleep()} function, the whole program freezes. This would stop the camera and the mouse control, making it impossible to crop the screenshot. Instead, we use a non-blocking timer with \texttt{time.time()}. This method checks the current time and ensures the shortcut is only pressed once every few seconds. Because the main loop never stops, the user can immediately close their hand (which our Custom AI model predicts as state \texttt{0}) to click and drag the mouse to capture the screen.
 
-The code modification required to implement this logic within the existing software is shown below[cite: 429]:
-
+The code modification required to implement this logic within the existing software is shown below:
 \begin{lstlisting}[caption={Exercise B - Screenshot Automation Implementation}, language=Python, captionpos=b]
 import pyautogui
 import time
