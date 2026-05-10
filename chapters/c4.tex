@@ -141,3 +141,75 @@ cv2.destroyAllWindows()
     \item \texttt{cv2.waitKey(1)}: Halts execution for 1 millisecond to listen for keyboard interrupts. If the user presses the 'q' key, the \texttt{while} loop breaks.
     \item \texttt{cap.release() \& cv2.destroyAllWindows()}: These cleanup functions are crucial; they sever the connection to the hardware camera to prevent system locks and safely close all active graphical windows.
 \end{itemize}
+
+\subsection{Advanced Integration: Custom AI Model and Mouse Control (HCI)}
+
+While in Section 4.5 successfully count fingers, they are highly dependent on 2D perspective and camera angles. To make the system truly robust, we can replace these hardcoded rules with a custom Machine Learning (ML) model and utilize the predictions for Human-Computer Interaction (HCI), specifically controlling the operating system's mouse pointer.
+
+\subsubsection{Feature Engineering (Wrist Relativity)}
+To train a robust model, the input data must be position-invariant. If raw screen coordinates are fed into the model, the algorithm will overfit to the hand's pixel location on the screen rather than learning its structural shape. 
+
+We set the wrist (Landmark 0) as the origin point $(0,0,0)$. All other 20 landmarks are calculated relative to the wrist using the following transformations:
+
+\begin{align}
+    x_{rel} &= x_i - x_{wrist} \\
+    y_{rel} &= y_i - y_{wrist} \\
+    z_{rel} &= z_i - z_{wrist}
+\end{align}
+
+\begin{lstlisting}[language=Python, caption=Extracting 3D Position-Invariant Features]
+landmark_data = []
+wrist = hand_landmarks.landmark[0]
+
+for landmark in hand_landmarks.landmark:
+    rel_x = landmark.x - wrist.x
+    rel_y = landmark.y - wrist.y
+    rel_z = landmark.z - wrist.z
+    landmark_data.extend([rel_x, rel_y, rel_z])
+\end{lstlisting}
+
+\subsubsection{Training the Classifier}
+By capturing a dataset containing roughly 100-200 variations of each gesture (0 to 5 fingers) using these engineered relative coordinates, the data becomes tabular. This allows us to utilize the \texttt{scikit-learn} library to train a Random Forest Classifier.
+
+\begin{lstlisting}[language=Python, caption=Training a Random Forest Model]
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+import pickle
+
+# Load dataset and split into 80% Training and 20% Testing
+df = pd.read_csv('hand_data.csv')
+X = df.drop('label', axis=1) 
+y = df['label']              
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train the model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Save the trained model
+with open('hand_model_3d.pkl', 'wb') as f:
+    pickle.dump(model, f)
+\end{lstlisting}
+
+\subsubsection{Real-Time Mouse Control (HCI)}
+With a trained model (\texttt{.pkl} file) capable of recognizing gestures, we can import the \texttt{pyautogui} library to bridge the gap between Python and the operating system. 
+
+The tip of the index finger (Landmark 8) dictates the cursor's spatial $X$ and $Y$ coordinates, mapped to the monitor's resolution. When the ML model classifies the hand structure as a closed fist ("0"), the script triggers a left-click event.
+
+\begin{lstlisting}[language=Python, caption=HCI Mouse Control Integration]
+import pyautogui
+import time
+
+# Mouse mapping logic using the Index Finger
+index_finger_tip = hand_landmarks.landmark[8]
+mouse_x = int(index_finger_tip.x * screen_w)
+mouse_y = int(index_finger_tip.y * screen_h)
+pyautogui.moveTo(mouse_x, mouse_y, _pause=False)
+
+# Clicking logic based on ML prediction
+if prediction == '0':
+    if (current_time - last_click_time) > 1.0: # 1-second cooldown
+        pyautogui.click()
+        last_click_time = current_time
+\end{lstlisting}

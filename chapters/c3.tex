@@ -72,23 +72,13 @@ If you are using Linux we'll assume you have a basic understanding of the comman
 
 \subsection{First Steps}
 
-The development of the Hand-Tracking Software begins with the use of the \textbf{OpenCV} library alongside the 
-front-facing camera to obtain a video feed in real-time, aiming to continuously capture hand movements and gestures
+The development of the Hand-Tracking Software begins with the use of the \textbf{OpenCV} library alongside the front-facing camera to obtain a video feed in real-time, aiming to continuously capture hand movements and gestures.
 
-The function \verb|cap = cv2.VideoCapture(n)| is responsible for the camera initialization, the index n=0 refers
-to built-in webcams commonly found in laptops, whereas higher indexes (n=1,2,...) allow access to secondary
-cameras connected via USB, it's crucial for both the camera and processor to capture the images at a high
-framerate to ensure smooth hand tracking and increased precision for analysis.
+The function \verb|cap = cv2.VideoCapture(n)| is responsible for the camera initialization. The index $n=0$ refers to built-in webcams commonly found in laptops, whereas higher indexes ($n=1,2,...$) allow access to secondary cameras connected via USB. It's crucial for both the camera and processor to capture the images at a high framerate to ensure smooth hand tracking and increased precision for analysis.
 
-Before sending the image to the algorithm, its pre-processing is required, OpenCV captures frames in the \textbf{BGR}
-format (Blue, Green, Red), the function \verb|cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)| will convert it to
-the \textbf{RGB} format (Red, Green, Blue), which is the standard format used by most Deep Learning Models 
-to ensure correct Inference (AI Processing). In addition, mirroring the frame with the function 
-\verb|cv2.flip(frame, 1)| provides a more intuitive feed for the user.
-\\
-\newline
-\begin{minipage}{\linewidth}
-\begin{lstlisting}[language=Python, caption={Basic Camera Feed using OpenCV}, captionpos=b]
+Before sending the image to the algorithm, pre-processing is required. OpenCV captures frames in the \textbf{BGR} format (Blue, Green, Red). The function \verb|cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)| will convert it to the \textbf{RGB} format (Red, Green, Blue), which is the standard format used by most Deep Learning Models to ensure correct Inference (AI Processing). In addition, mirroring the frame with the function \verb|cv2.flip(frame, 1)| provides a more intuitive feed for the user.
+
+\begin{lstlisting}[caption={Basic Camera Feed using OpenCV}, language=Python, captionpos=b]
 import cv2
 
 cap = cv2.VideoCapture(0)
@@ -110,37 +100,35 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 \end{lstlisting}
-\end{minipage}
 
-\sloppy The next step is to pass the frames through the Mediapipe model, which analyses the image and returns 21
-Hand Landmarks points placed throughout the hand, storing their respective coordinates, the analysis is triggered
-by calling the function \verb|results = hands.process(rgb_frame)|. Following the Inference, if a hand is detected,
-the coordinates are connected by lines and drawn onto the original frame, which is then displayed in the window feed
-\newline
-\begin{lstlisting}[language=Python, caption={Mediapipe Frame Analysis}, captionpos=b]
+The next step is to pass the frames through the MediaPipe model, which analyses the image and returns 21 Hand Landmarks placed throughout the hand, storing their respective coordinates. The analysis is triggered by calling the function \verb|results = hands.process(rgb_frame)|. Following the Inference, if a hand is detected, the coordinates are connected by lines and drawn onto the original frame, which is then displayed in the window feed.
 
-#import cv2
+\begin{lstlisting}[caption={Mediapipe Frame Analysis}, language=Python, captionpos=b]
+import cv2
 import mediapipe as mp
 
-#MediaPipe Model Config
+# MediaPipe Model Config
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 hands = mp_hands.Hands(min_detection_confidence=0.9, min_tracking_confidence=0.9)
 
-#MediaPipe Coordinates to Finger Tip ID (Index, Middle, Ring, Pinky)
+# MediaPipe Coordinates to Finger Tip ID (Index, Middle, Ring, Pinky)
 finger_tips = [8, 12, 16, 20]
 thumb_tip = 4
 
-#OpenCV Camera & Window Config
+# OpenCV Camera Feed
+cap = cv2.VideoCapture(0)
 
-while True:
-
-#OpenCV Camera Feed
-
-results = hands.process(rgb_frame)
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret: break
+    
+    frame = cv2.flip(frame, 1)
+    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = hands.process(rgb_frame)
 
     if results.multi_hand_landmarks:
-        # We use 'enumerate' to know which hand we're looking (0 for the first, 1 for the second, etc.)
+        # We use 'enumerate' to know which hand we're looking at
         for hand_idx, hand_landmarks in enumerate(results.multi_hand_landmarks):
             
             # Draw Lines and Coordinates in Hand
@@ -148,11 +136,9 @@ results = hands.process(rgb_frame)
 
             # Find which hand (left or right) is being detected
             hand_label = results.multi_handedness[hand_idx].classification[0].label
-            
             raised_fingers = 0
 
             # 1. Thumb Logic (X-Axis)
-            # Because the camera is mirrored (flip), the X-Axis logic becomes:
             if hand_label == "Right":
                 if hand_landmarks.landmark[thumb_tip].x < hand_landmarks.landmark[thumb_tip - 1].x:
                     raised_fingers += 1
@@ -162,20 +148,20 @@ results = hands.process(rgb_frame)
 
             # 2. Other 4 Fingers Logic (Y-Axis)
             for tip in finger_tips:
-        # On the Window, the Y-Axis increases downward, so a LOWER value means the finger is raised 
+                # On the Window, the Y-Axis increases downward
                 if hand_landmarks.landmark[tip].y < hand_landmarks.landmark[tip - 2].y:
-                    opened_fingers += 1
+                    raised_fingers += 1
 
             # Write Text in Window
-        # Position of text is lowered in case there are two hands on screen (hand_idx * 50)
-            cv2.putText(frame, f'{hand_label} hand: {raised_fingers} fingers', (10, 50 + (hand_idx * 50)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            cv2.putText(frame, f'{hand_label} hand: {raised_fingers} fingers', 
+                       (10, 50 + (hand_idx * 50)),
+                       cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
 
-# OpenCV Display Frame & Close
+    cv2.imshow('Hand Tracker', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'): break
 
+cap.release()
+cv2.destroyAllWindows()
 \end{lstlisting}
 
-This continuous cycle of frame acquisition and immediate algorithmic analysis makes up the fundamental core of
-this project. The following chapter will elaborate on how the 21 hand landmarks can be used to detect patterns
-and movements. By leveraging this data, we can send commands to the computer, enabling control over the system
-through hand gestures alone.
+This continuous cycle of frame acquisition and immediate algorithmic analysis makes up the fundamental core of this project. The following chapter will elaborate on how the 21 hand landmarks can be used to detect patterns and movements. By leveraging this data, we can send commands to the computer, enabling control over the system through hand gestures alone.

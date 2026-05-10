@@ -1,8 +1,63 @@
 \section{Exercise(s)}
-% (this section may include one or more illustrative exercises, providing the corresponding resolution)
+\subsection{Problem A - Alt Tab Command}
+In this setting of using our hands to control our computer, the ability to "alt-tab" anytime is a very useful feature that allows the user to navigate the entire workspace in an instant. For this exercise, we want to map this command to a finger or a gesture, so that we can still use the index finger to control the mouse cursor around the screen.
 
-\subsection{Problem A}
-\subsubsection{(re)solution A}
+\subsubsection{Resolution A}
+Using the Ring Finger (Landmark 16), we can create a simple geometric rule to trigger the Alt-Tab keyboard macro using PyAutoGUI.
 
-\subsection{Problem B}
-\subsubsection{(re)solution B}
+\begin{lstlisting}[caption={Exercise A - Alt Tab Implementation}, language=Python, captionpos=b]
+rf_point = hand_landmarks.landmark[16] # Ring Finger Tip
+rf_base = hand_landmarks.landmark[14]  # Ring Finger PIP Joint (Base)
+
+# If Point is Higher than Base, Ring Finger is raised: Activate Command
+if rf_point.y < rf_base.y:             
+    # Flag controls Alt key press status, so it doesnt conflict with normal computer use
+    if not f_alttab:              
+        pyautogui.keyDown('alt')       # Presses Alt key, keeps it pressed
+        pyautogui.press('tab')         # Presses Tab key once to enter menu
+        f_alttab = True                # Activates Flag
+else:
+    if f_alttab:
+        pyautogui.keyUp('alt')         # Releases Alt key if it was pressed
+        f_alttab = False               # Deactivates Flag
+\end{lstlisting}
+
+\subsection{Problem B - Screenshot Automation}
+Enhance the existing real-time hand-tracking and mouse-control software to trigger a screenshot when a specific gesture is detected[cite: 416]. The system needs to recognize when the user fully extends their pinky finger and then execute the \texttt{Windows + Shift + S} keyboard shortcut[cite: 417]. Importantly, the program must continue running right after pressing the shortcut[cite: 418]. This allows the user to use the existing hand gestures to move the mouse and select the area for the screenshot[cite: 419].
+
+\subsubsection{Resolution B}
+To add this feature, we use the \texttt{pyautogui} library to simulate keyboard presses[cite: 420]. The logic depends on checking the position of the pinky finger using the MediaPipe hand tracking model[cite: 421]. 
+
+According to the model, the tip of the pinky finger is point (landmark) 20[cite: 422]. We can figure out if the finger is raised by comparing the Y-coordinate of the tip (landmark 20) with a lower joint, like landmark 18[cite: 422]. In images, the Y-axis goes from top to bottom, meaning a smaller Y-value is physically higher on the screen[cite: 422]. So, if the tip's Y-value is smaller than the joint's Y-value, the finger is raised[cite: 423].
+
+A major challenge is preventing the shortcut from triggering multiple times a second without pausing the video feed[cite: 424]. If we use a simple \texttt{time.sleep()} function, the whole program freezes[cite: 425]. This would stop the camera and the mouse control, making it impossible to crop the screenshot[cite: 426]. Instead, we use a non-blocking timer with \texttt{time.time()}[cite: 427]. This method checks the current time and ensures the shortcut is only pressed once every few seconds[cite: 427]. Because the main loop never stops, the user can immediately close their hand (which our Custom AI model predicts as state \texttt{0}) to click and drag the mouse to capture the screen[cite: 428].
+
+The code modification required to implement this logic within the existing software is shown below[cite: 429]:
+
+\begin{lstlisting}[caption={Exercise B - Screenshot Automation Implementation}, language=Python, captionpos=b]
+import pyautogui
+import time
+
+# --- Setup Configuration (Place before the main while loop) ---
+pyautogui.PAUSE = 0 
+last_action_time = 0
+COOLDOWN_SECONDS = 2.0
+
+# ... [Inside the 'for hand_landmarks in results.multi_hand_landmarks:' loop] ...
+
+# 1. Check if the pinky finger is raised
+pinky_tip = hand_landmarks.landmark[20].y
+pinky_pip = hand_landmarks.landmark[18].y
+is_pinky_raised = pinky_tip < pinky_pip
+
+current_time = time.time()
+
+# 2. Trigger the shortcut with a non-blocking timer
+if is_pinky_raised and (current_time - last_action_time > COOLDOWN_SECONDS):
+    pyautogui.hotkey('win', 'shift', 's')
+    last_action_time = current_time # Reset the cooldown timer
+
+# ... [The rest of the existing gesture control logic remains unchanged] ...
+\end{lstlisting}
+
+This approach allows the software to take a screenshot and immediately transition back to gesture control, fulfilling the exercise requirements while keeping the application smooth and responsive[cite: 430, 431].

@@ -36,4 +36,24 @@ S.~Mallick, ``Why does opencv use bgr color format?.'' \url{https://learnopencv.
 {Google}, ``Mediapipe hands solutions.'' \url{https://mediapipe.readthedocs.io/en/latest/solutions/hands.html}.
 \newblock Accessed: 2026.
 
+\bibitem{google_mediapipe}
+{Google}, ``Mediapipe.'' \url{https://mediapipe.org/}.
+\newblock Accessed: 2026.
+
+\bibitem{google_mediapipe_hands}
+{Google}, ``Mediapipe hands solutions.'' \url{https://mediapipe.readthedocs.io/en/latest/solutions/hands.html}.
+\newblock Accessed: 2026.
+
+\bibitem{pyautogui_docs}
+{PyAutoGUI}, ``Pyautogui documentation.'' \url{https://pyautogui.readthedocs.io/en/latest/mouse.html}.
+\newblock Accessed: 2026.
+
+\bibitem{vscode_about}
+{Microsoft}, ``Visual studio code.'' \url{https://code.visualstudio.com/}.
+\newblock Accessed: 2026.
+
+\bibitem{python_about}
+{Python Software Foundation}, ``About python.'' \url{https://www.python.org/about/}.
+\newblock Accessed: 2026.
+
 \end{thebibliography}

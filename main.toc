@@ -27,10 +27,14 @@
 \contentsline {subsection}{\numberline {4.4}Image Pre-processing: The "Why" and "How"}{13}{subsection.4.4}%
 \contentsline {subsection}{\numberline {4.5}Kinematic Logic: The Coordinate System}{13}{subsection.4.5}%
 \contentsline {subsection}{\numberline {4.6}Visual Output and Resource Deallocation}{14}{subsection.4.6}%
-\contentsline {section}{\numberline {5}Exercise(s)}{16}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Problem A}{16}{subsection.5.1}%
-\contentsline {subsubsection}{\numberline {5.1.1}(re)solution A}{16}{subsubsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.2}Problem B}{16}{subsection.5.2}%
-\contentsline {subsubsection}{\numberline {5.2.1}(re)solution B}{16}{subsubsection.5.2.1}%
-\contentsline {section}{\numberline {6}Challenge}{17}{section.6}%
-\contentsline {section}{Annexes}{19}{section*.4}%
+\contentsline {subsection}{\numberline {4.7}Advanced Integration: Custom AI Model and Mouse Control (HCI)}{15}{subsection.4.7}%
+\contentsline {subsubsection}{\numberline {4.7.1}Feature Engineering (Wrist Relativity)}{15}{subsubsection.4.7.1}%
+\contentsline {subsubsection}{\numberline {4.7.2}Training the Classifier}{15}{subsubsection.4.7.2}%
+\contentsline {subsubsection}{\numberline {4.7.3}Real-Time Mouse Control (HCI)}{16}{subsubsection.4.7.3}%
+\contentsline {section}{\numberline {5}Exercise(s)}{17}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Problem A - Alt Tab Command}{17}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Resolution A}{17}{subsubsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.2}Problem B - Screenshot Automation}{17}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Resolution B}{17}{subsubsection.5.2.1}%
+\contentsline {section}{\numberline {6}Challenge: The "Virtual Zoom"}{19}{section.6}%
+\contentsline {section}{Annexes}{21}{section*.4}%

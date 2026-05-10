@@ -1,2 +1,18 @@
-\section{Challenge}
-% (this section challenges students to do something different, to solve a specific problem, using the core technology/tool of this lab script; some hints may be provided, but not the (re)solution, which may be unveiled afterwards (e.g. one week later) or upon explicit solicitation from students that unsuccessfully attempted to solve the problem)
+\section{Challenge: The "Virtual Zoom"}
+
+To conclude this lab script, the final challenge consists of expanding the system's capabilities, focusing on accessibility and document navigation.
+
+\vspace{0.4cm}
+\textbf{Problem Statement:} 
+When analyzing complex electrical schematics or reading technical documentation, it is often necessary to zoom in or out without taking your hands off the task being performed. The objective is to modify the \texttt{run\_ai.py} script to function as a gesture-controlled magnification tool.
+
+\vspace{0.6cm}
+\textbf{Requirements and Objectives:}
+\begin{itemize}
+    \item \textbf{Movement 1 and Command 1 (Zoom In):} Detect when the user's hand is fully open (5 fingers raised). This movement must trigger the \texttt{Ctrl +} shortcut via the \texttt{pyautogui.hotkey('ctrl', '+')} command.
+    \item \textbf{Movement 2 and Command 2 (Zoom Out):} Detect when the user's hand is fully closed (0 fingers raised). This movement must trigger the \texttt{Ctrl -} shortcut via the \texttt{pyautogui.hotkey('ctrl', '-')} command.
+    \item \textbf{Cooldown Implementation:} As learned in Exercise B, you must implement a non-blocking timer using \texttt{time.time()} to prevent the command from being triggered multiple times per second. A cooldown interval of at least 1.2 seconds is recommended.
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{Implementation Hint:} You can solve this challenge by checking your Machine Learning model's output variable (\texttt{prediction}). Confirm if the string value is exactly \texttt{'5'} or \texttt{'0'} before executing the respective shortcut command and resetting the non-blocking timer.
